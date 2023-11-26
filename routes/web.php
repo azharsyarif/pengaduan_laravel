@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TanggapanController;
 use App\Models\Pengaduan;
 use Illuminate\Support\Facades\Route;
 
@@ -12,24 +14,37 @@ use Illuminate\Support\Facades\Route;
 |
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" midleware group. Make something great!
+| be assigned to the "web" middleware group. Make something great!
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
-Route::get('/login', [PetugasController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [PetugasController::class, 'login']);
-
-// Route::get('/home', [PetugasController::class, 'showHome'])->name('home');
-Route::get('/home', function (){
+Route::get('/dashboard', function () {
     $pengaduans = Pengaduan::all();
-    return view('welcome', compact('pengaduans'));
-})->name('home');
+    return view('dashboard', compact('pengaduans'));
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
 
-Route::get('/register', [PetugasController::class, 'showRegisterForm'])->name('register');
-Route::post('/register', [PetugasController::class, 'register']);
-Route::post('/logout', [PetugasController::class, 'logout'])->name('logout');
+
+Route::post('/update-konformasi/{id}', [PengaduanController::class, 'UpdateKonfirmasi'])->name('update.konfirmasi');
+
+// Tanggapan
+// Route::post('/tanggapan/create/{id_pengaduan}', [TanggapanController::class, 'create'])->name('tanggapan.create');
+// Route::patch('/update-status-selesai/{id_pengaduan}', [TanggapanController::class, 'updateStatusSelesai'])->name('update.status.selesai');
+Route::get('/tanggapan/{pengaduan_id}', [TanggapanController::class, 'showTanggapanForm'])->name('form.tanggapan');
+
+Route::post('/add-tanggapan', [TanggapanController::class, 'addTanggapan'])->name('add.tanggapan');
+Route::get('/profile', [PetugasController::class, 'show'])->name('profile');
+
+
+Route::get('/tanggapan-halaman', [PetugasController::class, 'showTanggapanScreen'])->name('halaman-tanggapan');
+require __DIR__.'/auth.php';

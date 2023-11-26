@@ -38,9 +38,10 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'petugas',
+            'provider' => 'users',
         ],
-        'petugas' => [ // Tambahkan guard 'petugas' di sini
+    
+        'petugas' => [
             'driver' => 'session',
             'provider' => 'petugas',
         ],
@@ -63,17 +64,17 @@ return [
     |
     */
 
-    'providers' => [
-        'petugas' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Petugas::class,
-        ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+'providers' => [
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
     ],
+
+    'petugas' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Petugas::class,
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Masyarakat;
 use App\Models\Pengaduan;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,13 +18,12 @@ class PengaduanController extends Controller
         return view('welcome', compact('pengaduans'));
     }
 
-    public function create(Request $request)
+public function create(Request $request)
 {
     // Validasi data dari permintaan
     $validator = Validator::make($request->all(), [
         'masyarakat_id' => 'required|string',
         'isi_laporan' => 'string',
-        // 'tgl_pengaduan' => 'date', // Mengubah format nama atribut menjadi menggunakan underscore (_)
         'foto' => 'string',
     ]);
 
@@ -42,12 +42,13 @@ class PengaduanController extends Controller
     // Dapatkan nik dari masyarakat_id
     $nik = $masyarakat->nik;
 
-    // Buat entitas Pengaduan hanya dengan mengambil nik
+    // Buat entitas Pengaduan dengan mengambil nik dan tgl_pengaduan saat ini
     $pengaduan = Pengaduan::create([
         'masyarakat_id' => $request->masyarakat_id,
         'isi_laporan' => $request->isi_laporan,
         'foto' => $request->foto,
         'nik' => $nik,
+        'tgl_pengaduan' => Carbon::now(), // Menyimpan tanggal dan waktu saat ini
     ]);
 
     if ($pengaduan) {
@@ -55,6 +56,18 @@ class PengaduanController extends Controller
     } else {
         // Jika gagal menyimpan data pesanan, kirim respons server error
         return response()->json(['error' => 'Terjadi kesalahan saat membuat pesanan.'], 500);
+    }
+}
+
+
+public function UpdateKonfirmasi(Request $request, $id){
+    $update_status = Pengaduan::find($id);
+    if ($update_status) {
+        $update_status->status  = 'proses';
+        $update_status->save();
+        return redirect('/dashboard')->with('alert', 'Pengaduan berhasil diterima dan masuk dalam daftar tunggu!');
+    } else {
+        return redirect('/dashboard')->with('alert', 'Pengaduan tidak ditemukan!');
     }
 }
 }
