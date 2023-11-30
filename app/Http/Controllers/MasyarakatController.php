@@ -13,9 +13,22 @@ class MasyarakatController extends Controller
 
     public function index()
     {
-        $masyarakat = Masyarakat::all();
+        $masyarakat = Masyarakat::all(); 
         return response()->json(['masyarakat' => $masyarakat], 200);
+    }   
+    
+    public function getByNik($nik)
+    {
+        // Cari masyarakat berdasarkan nik
+        $masyarakat = Masyarakat::where('nik', $nik)->first();
+    
+        if ($masyarakat) {
+            return response()->json(['masyarakat' => $masyarakat], 200);
+        } else {
+            return response()->json(['error' => 'Masyarakat tidak ditemukan'], 404);
+        }
     }
+    
 
     public function getUserProfile($id)
     {

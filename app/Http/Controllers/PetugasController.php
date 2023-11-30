@@ -76,7 +76,6 @@ class PetugasController extends Controller
             return redirect('login')->with('alert', 'Password atau Email, Salah!');
         }
     }
-    
 
 
 

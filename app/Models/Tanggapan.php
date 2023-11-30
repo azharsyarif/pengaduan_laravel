@@ -9,5 +9,7 @@ class Tanggapan extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['tgl_pengaduan', 'pengaduan_id','tanggapan','petugas_id'];
+    // protected $fillable = ['tgl_pengaduan', 'pengaduan_id','tanggapan','petugas_id'];
+
+    protected $guarded = ['id'];
 }

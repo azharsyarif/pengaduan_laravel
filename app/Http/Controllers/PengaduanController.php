@@ -18,56 +18,39 @@ class PengaduanController extends Controller
         return view('welcome', compact('pengaduans'));
     }
 
-public function create(Request $request)
-{
-    // Validasi data dari permintaan
-    $validator = Validator::make($request->all(), [
-        'masyarakat_id' => 'required|string',
-        'isi_laporan' => 'string',
-        'foto' => 'string',
-    ]);
-
-    if ($validator->fails()) {
-        // Jika validasi gagal, kirim respons dengan pesan kesalahan
-        return response()->json(['error' => $validator->errors()], 422);
+    public function create(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'isi_laporan' => 'required|string',
+            'foto' => 'required|string',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+    
+        $pengaduan = Pengaduan::create([
+            'isi_laporan' => $request->isi_laporan,
+            'foto' => $request->foto,
+            'tgl_pengaduan' => now(), // Menggunakan helper function now() untuk waktu saat ini
+        ]);
+    
+        if ($pengaduan) {
+            return response()->json(['message' => 'Pengaduan berhasil dibuat', 'order' => $pengaduan], 201);
+        } else {
+            return response()->json(['error' => 'Terjadi kesalahan saat membuat pengaduan.'], 500);
+        }
     }
+    
 
-    // Periksa apakah masyarakat dengan ID yang diberikan ada dalam database
-    $masyarakat = Masyarakat::find($request->masyarakat_id);
-
-    if (!$masyarakat) {
-        return response()->json(['error' => 'ID masyarakat tidak valid'], 422);
+    public function UpdateKonfirmasi(Request $request, $id){
+        $update_status = Pengaduan::find($id);
+        if ($update_status) {
+            $update_status->status  = 'proses';
+            $update_status->save();
+            return redirect('/dashboard')->with('alert', 'Pengaduan berhasil diterima dan masuk dalam daftar tunggu!');
+        } else {
+            return redirect('/dashboard')->with('alert', 'Pengaduan tidak ditemukan!');
+        }
     }
-
-    // Dapatkan nik dari masyarakat_id
-    $nik = $masyarakat->nik;
-
-    // Buat entitas Pengaduan dengan mengambil nik dan tgl_pengaduan saat ini
-    $pengaduan = Pengaduan::create([
-        'masyarakat_id' => $request->masyarakat_id,
-        'isi_laporan' => $request->isi_laporan,
-        'foto' => $request->foto,
-        'nik' => $nik,
-        'tgl_pengaduan' => Carbon::now(), // Menyimpan tanggal dan waktu saat ini
-    ]);
-
-    if ($pengaduan) {
-        return response()->json(['order' => $pengaduan], 201);
-    } else {
-        // Jika gagal menyimpan data pesanan, kirim respons server error
-        return response()->json(['error' => 'Terjadi kesalahan saat membuat pesanan.'], 500);
-    }
-}
-
-
-public function UpdateKonfirmasi(Request $request, $id){
-    $update_status = Pengaduan::find($id);
-    if ($update_status) {
-        $update_status->status  = 'proses';
-        $update_status->save();
-        return redirect('/dashboard')->with('alert', 'Pengaduan berhasil diterima dan masuk dalam daftar tunggu!');
-    } else {
-        return redirect('/dashboard')->with('alert', 'Pengaduan tidak ditemukan!');
-    }
-}
 }

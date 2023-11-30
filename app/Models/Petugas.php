@@ -11,12 +11,14 @@ class Petugas extends Model implements \Illuminate\Contracts\Auth\Authenticatabl
     use Authenticatable;
     use HasFactory;
 
-    protected $fillable = [
-        'nama_petugas',
-        'username',
-        'password',
-    ];
+    // protected $fillable = [
+    //     'nama_petugas',
+    //     'username',
+    //     'password',
+    // ];
 
+    protected $guarded = ['id'];
+    
     protected $hidden = [
         'password',
         'remember_token',

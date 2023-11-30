@@ -5,6 +5,7 @@ use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TanggapanController;
 use App\Models\Pengaduan;
+use App\Models\Tanggapan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,5 +47,11 @@ Route::post('/add-tanggapan', [TanggapanController::class, 'addTanggapan'])->nam
 Route::get('/profile', [PetugasController::class, 'show'])->name('profile');
 
 
-Route::get('/tanggapan-halaman', [PetugasController::class, 'showTanggapanScreen'])->name('halaman-tanggapan');
+// Route::get('/tanggapan-halaman', [PetugasController::class, 'showTanggapanScreen'])->name('halaman-tanggapan');
+
+Route::get('/tanggapan-halaman', function () {
+    $tanggapans = Tanggapan::all();
+    return view('tanggapanTable', compact('tanggapans'));
+})->middleware(['auth', 'verified'])->name('halaman-tanggapan');
+
 require __DIR__.'/auth.php';

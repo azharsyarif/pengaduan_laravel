@@ -29,6 +29,7 @@ Route::post('masyarakat/logout', [MasyarakatController::class,'logout'])->name('
 Route::get('masyarakat', [MasyarakatController::class,'index'])->name('index');
 Route::get('masyarakat/id/{id}', [MasyarakatController::class,'getUserProfile'])->name('show');
 Route::post('masyarakat/update/{id}', [MasyarakatController::class,'update'])->name('update');
+Route::get('/masyarakat/nik/{nik}', [MasyarakatController::class, 'getByNik'])->name('bynik');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
