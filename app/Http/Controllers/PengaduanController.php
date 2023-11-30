@@ -22,7 +22,7 @@ class PengaduanController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'isi_laporan' => 'required|string',
-            'foto' => 'required|string',
+            'kategori' => 'required|string',
         ]);
     
         if ($validator->fails()) {
@@ -30,9 +30,11 @@ class PengaduanController extends Controller
         }
     
         $pengaduan = Pengaduan::create([
+            'masyarakat_id' => $request->masyarakat_id,
             'isi_laporan' => $request->isi_laporan,
             'foto' => $request->foto,
             'tgl_pengaduan' => now(), // Menggunakan helper function now() untuk waktu saat ini
+            'kategori' => $request->kategori, // Menggunakan helper function now() untuk waktu saat ini
         ]);
     
         if ($pengaduan) {
@@ -41,7 +43,6 @@ class PengaduanController extends Controller
             return response()->json(['error' => 'Terjadi kesalahan saat membuat pengaduan.'], 500);
         }
     }
-    
 
     public function UpdateKonfirmasi(Request $request, $id){
         $update_status = Pengaduan::find($id);

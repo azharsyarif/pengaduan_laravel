@@ -19,6 +19,16 @@ class PetugasController extends Controller
 
     return view('auth.profile', ['petugas' => $petugas]);
 }
+
+
+        public function showPetugasScreen()
+    {
+        $petugas = auth()->user(); // Pastikan Anda mengambil petugas yang sedang login
+
+        return view('petugas');
+    }
+
+
     public function showLoginForm()
     {
     return view('auth.login');

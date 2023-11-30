@@ -45,6 +45,7 @@ Route::get('/tanggapan/{pengaduan_id}', [TanggapanController::class, 'showTangga
 
 Route::post('/add-tanggapan', [TanggapanController::class, 'addTanggapan'])->name('add.tanggapan');
 Route::get('/profile', [PetugasController::class, 'show'])->name('profile');
+Route::get('/halaman-petugas', [PetugasController::class, 'showPetugasScreen'])->name('halaman-petugas');
 
 
 // Route::get('/tanggapan-halaman', [PetugasController::class, 'showTanggapanScreen'])->name('halaman-tanggapan');

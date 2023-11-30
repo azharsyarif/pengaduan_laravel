@@ -9,7 +9,7 @@ class Pengaduan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['tgl_pengaduan','foto', 'masyarakat_id', 'isi_laporan', 'status'];
+    protected $guarded = ['id'];
 
     public function masyarakat()
     {

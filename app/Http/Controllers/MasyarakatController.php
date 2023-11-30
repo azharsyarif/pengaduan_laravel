@@ -29,7 +29,6 @@ class MasyarakatController extends Controller
         }
     }
     
-
     public function getUserProfile($id)
     {
         $user = Masyarakat::find($id);
@@ -97,6 +96,7 @@ class MasyarakatController extends Controller
             'status' => 200,
             'token' => $token,
             'user' => $user,
+            'userId' => $user->id, // Menambahkan 'userId' ke dalam respons
             'message' => 'Login berhasil'
         ];
         return response()->json($response, 200);
@@ -107,8 +107,8 @@ class MasyarakatController extends Controller
         $response = ['status' => 401, 'message' => 'Username atau password Anda salah! Silahkan coba lagi'];
         return response()->json($response, 401);
     }
+}
 
-    }
     
     public function logout()
     {

@@ -18,17 +18,24 @@
                         <th scope="col" class="px-6 py-3">NIK</th>
                         <th scope="col" class="px-6 py-3">Isi Laporan</th>
                         <th scope="col" class="px-6 py-3">Foto</th>
+                        <th scope="col" class="px-6 py-3">Kategori</th>
                         <th scope="col" class="px-6 py-3">Status</th>
                         <th scope="col" class="px-6 py-3">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($pengaduans as $pengaduan)
+                    @php
+                        $role = Auth::user()->role;
+                        $cate = $pengaduan->kategori;
+                    @endphp                        
+                    @if ($role == 'admin' || $role == $cate)
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <td class="px-6 py-4">{{ $pengaduan->tgl_pengaduan }}</td>
                             <td class="px-6 py-4">{{ $pengaduan->masyarakat_id }}</td>
                             <td class="px-6 py-4">{{ $pengaduan->isi_laporan }}</td>
-                            <td class="px-6 py-4"><img src="{{ $pengaduan->foto }}" alt="Foto Pengaduan"></td>
+                            <td class="px-6 py-4"><img src="data:image/jpeg;base64,{{ base64_encode($pengaduan->foto) }}" alt="avatar" width="100px" class="imaged w64 rounded" /></td>
+                            <td class="px-6 py-4">{{ $pengaduan->kategori}}</td>
                             @if ($pengaduan->status == 'baru')
                                 <td class="border text-center">
                                     <button style="background-color: red; color: #111827;" class="px-4 py-2 rounded" disabled>
@@ -68,6 +75,7 @@
                                 </td>
                             @endif
                         </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>
