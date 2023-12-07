@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Pengaduan;
 use App\Models\Petugas;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class PetugasController extends Controller
 {
@@ -48,23 +50,74 @@ class PetugasController extends Controller
     return view('tanggapanTable');
     }
 
-    public function register(Request $request)
+// API
+    public function index()
     {
-        $validatedData = $request->validate([
-            'nama_petugas' => 'required|string|max:255',
-            'username' => 'required|unique:petugas',
-            'password' => 'required|min:6',
-        ]);
+        $petugas = User::all(); 
+        return response()->json(['petugas' => $petugas], 201);
+    } 
 
-        $petugas = Petugas::create([
-            'nama_petugas' => $validatedData['nama_petugas'],
-            'username' => $validatedData['username'],
-            'password' => Hash::make($validatedData['password']),
-        ]);
+    // public function create(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'name' => 'required|string',
+    //         'email' => 'required|string',
+    //         'password' => 'required|string',
+    //     ]);
+    
+    //     if ($validator->fails()) {
+    //         return response()->json(['error' => $validator->errors()], 422);
+    //     }
+    
+    //     $pengaduan = User::create([
+    //         'name' => $request->name, 
+    //         'name' => $request->email, 
+    //         'password' => Hash::make($request->password),
+    //         'no_telp' => $request->email,
+    //         'no_telp' => $request->email,
+            
+    //         // Menggunakan helper function now() untuk waktu saat ini
+    //     ]);
+    
+    //     if ($pengaduan) {
+    //         return response()->json(['message' => 'Pengaduan berhasil dibuat', 'order' => $pengaduan], 201);
+    //     } else {
+    //         return response()->json(['error' => 'Terjadi kesalahan saat membuat pengaduan.'], 500);
+    //     }
+    // }
 
-        return redirect()->route('login')->with(['success' => 'Account created successfully!']);
+
+
+    public function create(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string',
+        'email' => 'required|string|max:255',
+        'password' => 'required|min:6',
+        // Tambahkan validasi lain jika diperlukan
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['error' => $validator->errors()], 422);
     }
 
+    try {
+        $petugas = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'no_telp' => $request->no_telp,
+            'role' => $request->role,
+            // Isi kolom lain jika diperlukan
+        ]);
+
+        return response()->json(['success' => 'Account created successfully!', 'data' => $petugas], 201);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to create account.'], 500);
+    }
+}
+    
+ 
 
 
     public function login(Request $request)

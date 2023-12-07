@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PDFController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\ProfileController;
@@ -54,5 +55,17 @@ Route::get('/tanggapan-halaman', function () {
     $tanggapans = Tanggapan::all();
     return view('tanggapanTable', compact('tanggapans'));
 })->middleware(['auth', 'verified'])->name('halaman-tanggapan');
+
+
+Route::get('/generate-laporan', function () {
+    $tanggapan = Tanggapan::all();
+    $pengaduan = Pengaduan::all();
+    return PDFController::generatePDF($tanggapan, $pengaduan);
+})->middleware(['auth', 'verified'])->name('generate.tanggapan');
+    
+
+
+Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
+
 
 require __DIR__.'/auth.php';

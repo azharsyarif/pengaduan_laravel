@@ -9,12 +9,11 @@
 <body>
     <section class="bg-white dark:bg-gray-900">
         <x-navbar />
-
         <div class="relative overflow-x-auto">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <table id="pengaduan-table" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">Tanggal Pengaduan</th>
+                        <th scope="col" class="px-6 py-3 tanggal-pengaduan-header">Tanggal Pengaduan</th>
                         <th scope="col" class="px-6 py-3">NIK</th>
                         <th scope="col" class="px-6 py-3">Isi Laporan</th>
                         <th scope="col" class="px-6 py-3">Foto</th>
@@ -30,29 +29,31 @@
                         $cate = $pengaduan->kategori;
                     @endphp                        
                     @if ($role == 'admin' || $role == $cate)
-                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <td class="px-6 py-4">{{ $pengaduan->tgl_pengaduan }}</td>
-                            <td class="px-6 py-4">{{ $pengaduan->masyarakat_id }}</td>
-                            <td class="px-6 py-4">{{ $pengaduan->isi_laporan }}</td>
-                            <td class="px-6 py-4"><img src="data:image/jpeg;base64,{{ base64_encode($pengaduan->foto) }}" alt="avatar" width="100px" class="imaged w64 rounded" /></td>
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td class="px-6 py-4">{{ $pengaduan->tgl_pengaduan }}</td>
+                        <td class="px-6 py-4">{{ $pengaduan->tgl_pengaduan }}</td>
+                        <td class="px-6 py-4">{{ $pengaduan->isi_laporan }}</td>
+                            <td class="px-6 py-4">
+                                <img src="{{ asset('storage/' . $pengaduan->foto) }}" alt="Foto Pengaduan" width="100px" class="imaged w64 rounded" />
+                            </td>
                             <td class="px-6 py-4">{{ $pengaduan->kategori}}</td>
                             @if ($pengaduan->status == 'baru')
                                 <td class="border text-center">
-                                    <button style="background-color: red; color: #111827;" class="px-4 py-2 rounded" disabled>
+                                    <button class="bg-yellow-600 transition text-white py-2 px-4 rounded" disabled>
                                         <b>Menunggu Konfirmasi</b>
                                     </button>
                                 </td>
                                 <td class="border text-center">
                                     <form action="/update-konformasi/{{$pengaduan->id}}" method="post">
                                         {{ csrf_field() }}
-                                        <button style="background-color: #404B69; color: #111827;" class="px-4 py-2 rounded">
+                                        <button class="bg-gray-600 hover:bg-gray-800 transition text-white font-bold py-2 px-4 rounded">
                                             <b>ACCEPT</b>
                                         </button>
                                     </form>
                                 </td>
                             @elseif ($pengaduan->status == 'proses')
-                                <td>
-                                    <button style="background-color: #31a1fd; color: #111827;" class="px-4 py-2 rounded" disabled>
+                                <td class="border text-center">
+                                    <button class=" bg-blue-500 transition text-black font-semibold py-2 px-4 rounded" disabled>
                                         <b>Menunggu Tanggapan</b>
                                     </button>
                                 </td>
@@ -63,14 +64,9 @@
                                     </a>
                                 </td>
                             @elseif ($pengaduan->status == 'selesai')
-                                <td>
-                                    <button style="background-color: #00FF00; color: #111827;" class="px-4 py-2 rounded" disabled>
+                                <td class="text-center">
+                                    <button style=" background-color: #00FF00; color: #111827;" class="px-4 py-2 rounded" disabled>
                                         <b>Selesai</b>
-                                    </button>
-                                </td>
-                                <td class="border text-center">
-                                    <button class="bg-gray-600 hover:bg-gray-800 transition text-white font-bold py-2 px-4 rounded">
-                                        action
                                     </button>
                                 </td>
                             @endif
@@ -80,7 +76,10 @@
                 </tbody>
             </table>
         </div>
+
+        <x-footer />
     </section>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script>
         var msg = '{{Session::get('alert')}}';
         var exist = '{{Session::has('alert')}}';
@@ -88,5 +87,14 @@
             alert(msg);
         }
     </script>
+<script>
+    const datepicker = new Datepicker(document.querySelector('.datepicker'), {
+        // Atur opsi datepicker sesuai kebutuhan
+        // Contoh konfigurasi opsi:
+        // format: 'yyyy-mm-dd',
+        // language: 'en'
+    });
+</script>
+    
 </body>
 </html>
